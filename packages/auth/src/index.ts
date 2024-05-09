@@ -1,18 +1,12 @@
-import { Ability, AbilityBuilder, ForcedSubject } from '@casl/ability'
+import { Ability, AbilityBuilder } from '@casl/ability'
 
 import { User } from './models/user'
 import { rolePermissions } from './permissions'
+import { ProjectSubject } from './subjects/project'
+import { UserSubject } from './subjects/user'
 
-const actions = ['manage', 'invite', 'delete'] as const
-const subjects = ['User', 'all'] as const
+type AppAbilities = UserSubject | ProjectSubject | ['manage', 'all']
 
-type AppAbilities = [
-  (typeof actions)[number],
-  (
-    | (typeof subjects)[number]
-    | ForcedSubject<Exclude<(typeof subjects)[number], 'all'>>
-  ),
-]
 export type AppAbility = Ability<AppAbilities>
 
 export function defineAbilityFor(user: User): AppAbility {
