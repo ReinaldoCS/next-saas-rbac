@@ -1,11 +1,24 @@
 import { Ability, AbilityBuilder } from '@casl/ability'
+import { z } from 'zod'
 
 import { User } from './models/user'
 import { rolePermissions } from './permissions'
-import { ProjectSubject } from './subjects/project'
-import { UserSubject } from './subjects/user'
+import { billingSubjectSchema } from './subjects/billing'
+import { inviteSubjectSchema } from './subjects/invite'
+import { organizationSubjectSchema } from './subjects/organization'
+import { projectSubjectSchema } from './subjects/project'
+import { userSubjectSchema } from './subjects/user'
 
-type AppAbilities = UserSubject | ProjectSubject | ['manage', 'all']
+const appAbilitiesSchema = z.union([
+  billingSubjectSchema,
+  inviteSubjectSchema,
+  organizationSubjectSchema,
+  projectSubjectSchema,
+  userSubjectSchema,
+  z.tuple([z.literal('manage'), z.literal('all')]),
+])
+
+type AppAbilities = z.infer<typeof appAbilitiesSchema>
 
 export type AppAbility = Ability<AppAbilities>
 
