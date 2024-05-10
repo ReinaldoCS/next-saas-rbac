@@ -10,14 +10,22 @@ type DefinePermissions = (
 ) => void
 
 export const rolePermissions: Record<Roles, DefinePermissions> = {
-  ADMIN: (_, { can }) => {
+  ADMIN: (user, { can, cannot }) => {
     can('manage', 'all')
+
+    cannot(['transfer_ownership', 'update'], 'Organization')
+    can(['transfer_ownership', 'update'], 'Organization', {
+      ownerId: { $gt: user.id },
+    })
   },
+
   MEMBERS: (user, { can }) => {
+    can('get', 'User')
     can(['create', 'get'], 'Project')
-    can(['update', 'create'], 'Project', { ownerId: { $eq: user.id } })
+    can(['update', 'delete'], 'Project', { ownerId: { $eq: user.id } })
   },
+
   BILLING: (_, { can }) => {
-    can('get', 'Project')
+    can('manage', 'Billing')
   },
 }
