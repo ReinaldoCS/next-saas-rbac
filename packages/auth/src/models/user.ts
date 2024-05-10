@@ -4,6 +4,7 @@ import { rolesSchema } from '../roles'
 
 const userSchema = z.object({
   role: rolesSchema,
+  id: z.string(),
 })
 
 export type User = z.infer<typeof userSchema>

@@ -31,5 +31,11 @@ export function defineAbilityFor(user: User): AppAbility {
 
   rolePermissions[user.role](user, builder)
 
-  return builder.build()
+  const ability = builder.build({
+    detectSubjectType: (subject) => {
+      return subject.__typename
+    },
+  })
+
+  return ability
 }
