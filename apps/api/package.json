@@ -3,13 +3,17 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "tsx watch src/http/server.ts"
+    "dev": "tsx watch src/http/server.ts",
+    "generate": "drizzle-kit generate",
+    "migrate": "drizzle-kit migrate"
   },
   "dependencies": {
     "@fastify/cors": "^9.0.1",
     "@saas/auth": "*",
+    "drizzle-orm": "^0.30.10",
     "fastify": "^4.27.0",
     "fastify-type-provider-zod": "^1.1.9",
+    "postgres": "^3.4.4",
     "zod": "^3.23.8"
   },
   "devDependencies": {
@@ -17,6 +21,7 @@
     "@saas/prettier": "*",
     "@saas/ts-config": "*",
     "@types/node": "^20.12.11",
+    "drizzle-kit": "^0.21.1",
     "tsx": "^4.9.3"
   },
   "eslintConfig": {
