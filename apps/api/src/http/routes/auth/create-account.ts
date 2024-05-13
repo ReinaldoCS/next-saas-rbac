@@ -1,10 +1,11 @@
+import { hash } from 'bcryptjs'
 import { eq } from 'drizzle-orm'
 import type { FastifyInstance } from 'fastify'
 import type { ZodTypeProvider } from 'fastify-type-provider-zod'
 import z from 'zod'
 
-import { db } from '../../../db/connection'
-import { users } from '../../../db/schema'
+import { db } from '@/db/connection'
+import { users } from '@/db/schema'
 
 export async function createAccount(app: FastifyInstance) {
   app.withTypeProvider<ZodTypeProvider>().post(
@@ -18,24 +19,29 @@ export async function createAccount(app: FastifyInstance) {
         }),
       },
     },
-    async () => {
-      try {
-        const tbUser = await db
-          .select()
-          .from(users)
-          .where(eq(users.email, 'reinaldo'))
+    async (request, reply) => {
+      const { email, name, password } = request.body
 
-        await db
-          .update(users)
-          .set({ email: 'Reinaldo1' })
-          .where(eq(users.email, 'Reinaldo'))
-          .returning({ updatedId: users.id })
+      const userWithSameEmail = await db
+        .select({ email: users.email })
+        .from(users)
+        .where(eq(users.email, email))
 
-        console.log('tbUser -> ', tbUser)
-      } catch (e) {
-        console.log(e)
+      if (userWithSameEmail.length > 0) {
+        return reply
+          .status(400)
+          .send({ message: 'user with same e-mail already exists.' })
       }
-      return 'User created successfully'
+
+      const passwordHash = await hash(password, 6)
+
+      await db.insert(users).values({
+        email,
+        name,
+        passwordHash,
+      })
+
+      return reply.status(201).send()
     },
   )
 }
