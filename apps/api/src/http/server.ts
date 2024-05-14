@@ -1,7 +1,9 @@
 import fastifyCors from '@fastify/cors'
+import fastifySwagger from '@fastify/swagger'
+import fastifySwaggerUI from '@fastify/swagger-ui'
 import { fastify } from 'fastify'
 import {
-  // jsonSchemaTransform,
+  jsonSchemaTransform,
   serializerCompiler,
   validatorCompiler,
   ZodTypeProvider,
@@ -16,6 +18,24 @@ app.setValidatorCompiler(validatorCompiler)
 
 app.register(fastifyCors)
 
+app.register(fastifySwagger, {
+  openapi: {
+    info: {
+      title: 'NextJS SaaS API',
+      description:
+        'Full-stack SaaS with multi-tenant & RBAC API documentation.',
+      version: '1.0.0',
+    },
+    servers: [],
+  },
+  transform: jsonSchemaTransform,
+})
+
+app.register(fastifySwaggerUI, {
+  routePrefix: '/docs',
+})
+
+// Colocar rotas depois da configuração do Swagger
 app.register(createAccount)
 
 app.listen({ port: 3333 }).then(() => {
