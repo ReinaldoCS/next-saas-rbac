@@ -9,10 +9,10 @@ export const projects = pgTable('projects', {
     .default(sql`gen_random_uuid()`)
     .primaryKey(),
   name: text('name').notNull(),
-  description: text('name').notNull(),
+  description: text('description').notNull(),
   slug: text('slug').unique().notNull(),
   avatarUrl: text('avatar_url'),
-  owner: uuid('user_id')
+  ownerId: uuid('owner_id')
     .references(() => users.id)
     .notNull(),
   organization: uuid('organization_id')
@@ -24,7 +24,7 @@ export const projects = pgTable('projects', {
 
 export const projectRelations = relations(projects, ({ one }) => ({
   ownerProject: one(users, {
-    fields: [projects.owner],
+    fields: [projects.ownerId],
     references: [users.id],
   }),
   organizationProject: one(organizations, {

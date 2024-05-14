@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "tsx watch src/http/server.ts",
     "generate": "drizzle-kit generate",
-    "migrate": "drizzle-kit migrate"
+    "migrate": "drizzle-kit migrate",
+    "seed": "tsx src/db/seed.ts"
   },
   "dependencies": {
     "-": "^0.0.1",
@@ -26,6 +27,7 @@
     "@saas/ts-config": "*",
     "@types/node": "^20.12.11",
     "drizzle-kit": "^0.21.1",
+    "kleur": "^4.1.5",
     "tsx": "^4.9.3"
   },
   "eslintConfig": {

@@ -17,7 +17,7 @@ export const organizations = pgTable('organizations', {
     false,
   ),
   avatarUrl: text('avatar_url'),
-  owner: uuid('user_id')
+  ownerId: uuid('owner_id')
     .references(() => users.id)
     .notNull(),
   createdAt: timestamp('created_at').defaultNow(),
@@ -31,7 +31,7 @@ export const organizationsRelations = relations(
     members: many(members),
     projects: many(projects),
     ownerOrganization: one(users, {
-      fields: [organizations.owner],
+      fields: [organizations.ownerId],
       references: [users.id],
     }),
   }),
