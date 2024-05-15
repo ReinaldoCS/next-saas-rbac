@@ -12,7 +12,7 @@ Content-Type: application/json
 
 ###
 
-# @name login-with-password
+# @name authenticade-with-password
 POST {{BASE_URL}}/sessions/password
 Content-Type: application/json
 
@@ -21,3 +21,9 @@ Content-Type: application/json
   "email": "contato@reinaldodev.com.br",
   "password": "123456"
 }
+
+###
+
+# @name get-profile
+GET {{BASE_URL}}/profile
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmNDFiNTkyNC1kYjFjLTRkZGItOGEwYi1jZGQzZWJhMmY0ZmUiLCJpYXQiOjE3MTU3NzY1NDgsImV4cCI6MTcxNjM4MTM0OH0.Dy_HpEwVm4MiN7EjJFzcaQWTZr-5f8eUEQ94cF1dWGk
