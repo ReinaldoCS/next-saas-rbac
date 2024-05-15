@@ -9,3 +9,15 @@ Content-Type: application/json
   "email": "contato@reinaldodev.com.br",
   "password": "P@$$w0rd"
 }
+
+###
+
+# @name login-with-password
+POST {{BASE_URL}}/sessions/password
+Content-Type: application/json
+
+{
+  "name": "Reinaldo",
+  "email": "contato@reinaldodev.com.br",
+  "password": "123456"
+}
