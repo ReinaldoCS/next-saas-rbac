@@ -7,6 +7,8 @@ import z from 'zod'
 import { db } from '@/db/connection'
 import { members, organizations, users } from '@/db/schema'
 
+import { BadRequestError } from '../_errors/bad-request-error'
+
 export async function createAccount(app: FastifyInstance) {
   app.withTypeProvider<ZodTypeProvider>().post(
     '/users',
@@ -30,9 +32,7 @@ export async function createAccount(app: FastifyInstance) {
         .where(eq(users.email, email))
 
       if (userWithSameEmail.length > 0) {
-        return reply
-          .status(400)
-          .send({ message: 'user with same e-mail already exists.' })
+        throw new BadRequestError('User with same e-mail already exists.')
       }
 
       const [, domain] = email.split('@')

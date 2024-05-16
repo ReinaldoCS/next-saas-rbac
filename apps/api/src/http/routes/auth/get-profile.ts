@@ -6,6 +6,8 @@ import z from 'zod'
 import { db } from '@/db/connection'
 import { users } from '@/db/schema'
 
+import { BadRequestError } from '../_errors/bad-request-error'
+
 export async function getProfile(app: FastifyInstance) {
   app.withTypeProvider<ZodTypeProvider>().get(
     '/profile',
@@ -40,7 +42,7 @@ export async function getProfile(app: FastifyInstance) {
         .where(eq(users.id, sub))
 
       if (!user) {
-        throw new Error('user not found')
+        throw new BadRequestError('User not found.')
       }
 
       return reply.status(200).send({ user })
