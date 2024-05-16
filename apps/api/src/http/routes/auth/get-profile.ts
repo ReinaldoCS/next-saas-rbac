@@ -5,47 +5,51 @@ import z from 'zod'
 
 import { db } from '@/db/connection'
 import { users } from '@/db/schema'
+import { auth } from '@/http/middlewares/auth'
 
 import { BadRequestError } from '../_errors/bad-request-error'
 
 export async function getProfile(app: FastifyInstance) {
-  app.withTypeProvider<ZodTypeProvider>().get(
-    '/profile',
-    {
-      schema: {
-        tags: ['auth'],
-        summary: 'Get authenticate user profile',
-        response: {
-          200: z.object({
-            user: z.object({
-              id: z.string().uuid(),
-              name: z.string().nullable(),
-              email: z.string(),
-              avatarUrl: z.string().nullable(),
+  app
+    .withTypeProvider<ZodTypeProvider>()
+    .register(auth)
+    .get(
+      '/profile',
+      {
+        schema: {
+          tags: ['auth'],
+          summary: 'Get authenticate user profile',
+          response: {
+            200: z.object({
+              user: z.object({
+                id: z.string().uuid(),
+                name: z.string().nullable(),
+                email: z.string(),
+                avatarUrl: z.string().nullable(),
+              }),
             }),
-          }),
+          },
+          security: [{ apiKey: [] }],
         },
-        security: [{ apiKey: [] }],
       },
-    },
-    async (request, reply) => {
-      const { sub } = await request.jwtVerify<{ sub: string }>()
+      async (request, reply) => {
+        const userId = await request.getCurrentUserId()
 
-      const [user] = await db
-        .select({
-          id: users.id,
-          name: users.name,
-          email: users.email,
-          avatarUrl: users.avatarUrl,
-        })
-        .from(users)
-        .where(eq(users.id, sub))
+        const [user] = await db
+          .select({
+            id: users.id,
+            name: users.name,
+            email: users.email,
+            avatarUrl: users.avatarUrl,
+          })
+          .from(users)
+          .where(eq(users.id, userId))
 
-      if (!user) {
-        throw new BadRequestError('User not found.')
-      }
+        if (!user) {
+          throw new BadRequestError('User not found.')
+        }
 
-      return reply.status(200).send({ user })
-    },
-  )
+        return reply.status(200).send({ user })
+      },
+    )
 }
