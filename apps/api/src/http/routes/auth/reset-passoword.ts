@@ -44,8 +44,6 @@ export async function resetPassword(app: FastifyInstance) {
         .set({ passwordHash })
         .where(eq(users.id, tokenFromCode.userId))
 
-      console.log('checout aui!')
-
       return reply.status(204).send()
     },
   )
