@@ -2,6 +2,7 @@ import fastifyCors from '@fastify/cors'
 import fastifyJwt from '@fastify/jwt'
 import fastifySwagger from '@fastify/swagger'
 import fastifySwaggerUI from '@fastify/swagger-ui'
+import { env } from '@saas/env'
 import { fastify } from 'fastify'
 import {
   jsonSchemaTransform,
@@ -12,6 +13,7 @@ import {
 
 import { errorHandler } from './error-handler'
 import { authenticateWithPassword } from './routes/auth/authenticade-with-password'
+import { authenticateWithGithub } from './routes/auth/authenticate-with-github'
 import { createAccount } from './routes/auth/create-account'
 import { getProfile } from './routes/auth/get-profile'
 import { requestPasswordRecover } from './routes/auth/request-password-recover'
@@ -26,7 +28,7 @@ app.setErrorHandler(errorHandler)
 app.register(fastifyCors)
 
 app.register(fastifyJwt, {
-  secret: 'MY_JWT_SECRET',
+  secret: env.JWT_SECRET,
 })
 
 app.register(fastifySwagger, {
@@ -40,10 +42,11 @@ app.register(fastifySwagger, {
     servers: [],
     components: {
       securitySchemes: {
-        apiKey: {
-          type: 'apiKey',
-          in: 'header',
-          name: 'Authorization',
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+          description: 'JWT obtained from the authentication route.',
         },
       },
     },
@@ -61,7 +64,8 @@ app.register(authenticateWithPassword)
 app.register(getProfile)
 app.register(requestPasswordRecover)
 app.register(resetPassword)
+app.register(authenticateWithGithub)
 
-app.listen({ port: 3333 }).then(() => {
-  console.log('HTTP Server listening port 3333')
+app.listen({ port: env.SERVER_PORT }).then(() => {
+  console.log(`HTTP Server listening port: ${env.SERVER_PORT} `)
 })
