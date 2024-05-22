@@ -1,4 +1,4 @@
-import { relations, sql } from 'drizzle-orm'
+import { type InferModel, relations, sql } from 'drizzle-orm'
 import { boolean, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core'
 
 import { invites } from './invites'
@@ -36,3 +36,5 @@ export const organizationsRelations = relations(
     }),
   }),
 )
+
+export type Organization = InferModel<typeof organizations>
