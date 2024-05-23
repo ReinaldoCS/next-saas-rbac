@@ -1,5 +1,5 @@
 import { organizationSchema } from '@saas/auth'
-import { and, eq, not } from 'drizzle-orm'
+import { eq } from 'drizzle-orm'
 import type { FastifyInstance } from 'fastify'
 import type { ZodTypeProvider } from 'fastify-type-provider-zod'
 import { z } from 'zod'
@@ -9,25 +9,19 @@ import { organizations } from '@/db/schema'
 import { auth } from '@/http/middlewares/auth'
 import { getUserPermissions } from '@/utils/get-user-permissions'
 
-import { BadRequestError } from '../_errors/bad-request-error'
 import { UnauthorizedError } from '../_errors/unauthorized-error'
 
-export async function updateOrganization(app: FastifyInstance) {
+export async function shutdownOrganization(app: FastifyInstance) {
   app
     .withTypeProvider<ZodTypeProvider>()
     .register(auth)
-    .put(
+    .delete(
       '/organizations/:slug',
       {
         schema: {
           tags: ['organizations'],
-          summary: 'Update organization details',
+          summary: 'Shutdown organization details',
           security: [{ bearerAuth: [] }],
-          body: z.object({
-            name: z.string(),
-            domain: z.string().nullish(),
-            shouldAttachUsersByDomain: z.boolean().optional(),
-          }),
           params: z.object({
             slug: z.string(),
           }),
@@ -37,8 +31,6 @@ export async function updateOrganization(app: FastifyInstance) {
         },
       },
       async (request, reply) => {
-        const { name, domain, shouldAttachUsersByDomain } = request.body
-
         const { slug } = request.params
 
         const userId = await request.getCurrentUserId()
@@ -54,39 +46,16 @@ export async function updateOrganization(app: FastifyInstance) {
         console.log(userId)
         console.log(organization.ownerId)
 
-        const { cannot } = getUserPermissions(userId, membership.role)
+        const permissions = getUserPermissions(userId, membership.role)
 
-        if (cannot('update', authOrganization)) {
+        if (permissions.cannot('delete', authOrganization)) {
           throw new UnauthorizedError(
             "You don't have permission to update this organization.",
           )
         }
 
-        if (domain) {
-          const [organizationFromDomain] = await db
-            .select({ id: organizations.id })
-            .from(organizations)
-            .where(
-              and(
-                eq(organizations.domain, domain),
-                not(eq(organizations.id, organization.id)),
-              ),
-            )
-
-          if (organizationFromDomain) {
-            throw new BadRequestError(
-              'Organization with this domain already exists.',
-            )
-          }
-        }
-
         await db
-          .update(organizations)
-          .set({
-            name,
-            domain,
-            shouldAttachUsersByDomain,
-          })
+          .delete(organizations)
           .where(eq(organizations.id, organization.id))
 
         return reply.status(204).send()

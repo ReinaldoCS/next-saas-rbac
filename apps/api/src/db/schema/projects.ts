@@ -16,7 +16,7 @@ export const projects = pgTable('projects', {
     .references(() => users.id)
     .notNull(),
   organization: uuid('organization_id')
-    .references(() => organizations.id)
+    .references(() => organizations.id, { onDelete: 'cascade' })
     .notNull(),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').$onUpdate(() => new Date()),

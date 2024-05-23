@@ -2,7 +2,7 @@ import { AbilityBuilder } from '@casl/ability'
 
 import { AppAbility } from '.'
 import { User } from './models/user'
-import { Roles } from './roles'
+import { type Roles } from './roles'
 
 type DefinePermissions = (
   user: User,
@@ -15,11 +15,11 @@ export const rolePermissions: Record<Roles, DefinePermissions> = {
 
     cannot(['transfer_ownership', 'update'], 'Organization')
     can(['transfer_ownership', 'update'], 'Organization', {
-      ownerId: { $gt: user.id },
+      ownerId: { $eq: user.id },
     })
   },
 
-  MEMBERS: (user, { can }) => {
+  MEMBER: (user, { can }) => {
     can('get', 'User')
     can(['create', 'get'], 'Project')
     can(['update', 'delete'], 'Project', { ownerId: { $eq: user.id } })
