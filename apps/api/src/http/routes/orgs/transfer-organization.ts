@@ -1,32 +1,30 @@
 import { organizationSchema } from '@saas/auth'
-import { and, eq, not } from 'drizzle-orm'
+import { and, eq } from 'drizzle-orm'
 import type { FastifyInstance } from 'fastify'
 import type { ZodTypeProvider } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 
 import { db } from '@/db/connection'
-import { organizations } from '@/db/schema'
+import { members, organizations } from '@/db/schema'
 import { auth } from '@/http/middlewares/auth'
 import { getUserPermissions } from '@/utils/get-user-permissions'
 
 import { BadRequestError } from '../_errors/bad-request-error'
 import { UnauthorizedError } from '../_errors/unauthorized-error'
 
-export async function updateOrganization(app: FastifyInstance) {
+export async function transferOrganization(app: FastifyInstance) {
   app
     .withTypeProvider<ZodTypeProvider>()
     .register(auth)
-    .put(
-      '/organizations/:slug',
+    .patch(
+      '/organizations/:slug/owner',
       {
         schema: {
           tags: ['organizations'],
-          summary: 'Update organization details',
+          summary: 'Transfer organization ownership',
           security: [{ bearerAuth: [] }],
           body: z.object({
-            name: z.string(),
-            domain: z.string().nullish(),
-            shouldAttachUsersByDomain: z.boolean().optional(),
+            transferToUserId: z.string().uuid(),
           }),
           params: z.object({
             slug: z.string(),
@@ -37,8 +35,6 @@ export async function updateOrganization(app: FastifyInstance) {
         },
       },
       async (request, reply) => {
-        const { name, domain, shouldAttachUsersByDomain } = request.body
-
         const { slug } = request.params
 
         const userId = await request.getCurrentUserId()
@@ -55,36 +51,48 @@ export async function updateOrganization(app: FastifyInstance) {
 
         if (cannot('update', authOrganization)) {
           throw new UnauthorizedError(
-            "You don't have permission to update this organization.",
+            "You don't have permission to transfer this organization ownership.",
           )
         }
 
-        if (domain) {
-          const [organizationFromDomain] = await db
-            .select({ id: organizations.id })
-            .from(organizations)
+        const { transferToUserId } = request.body
+
+        const [transferToMembership] = await db
+          .select()
+          .from(members)
+          .where(
+            and(
+              eq(members.organizationId, organization.id),
+              eq(members.userId, transferToUserId),
+            ),
+          )
+
+        if (!transferToMembership) {
+          throw new BadRequestError(
+            `Target user is not a member of this organization.`,
+          )
+        }
+
+        await db.transaction(async (tx) => {
+          await tx
+            .update(members)
+            .set({
+              role: 'ADMIN',
+            })
             .where(
               and(
-                eq(organizations.domain, domain),
-                not(eq(organizations.id, organization.id)),
+                eq(members.organizationId, organization.id),
+                eq(members.userId, transferToUserId),
               ),
             )
 
-          if (organizationFromDomain) {
-            throw new BadRequestError(
-              'Organization with this domain already exists.',
-            )
-          }
-        }
-
-        await db
-          .update(organizations)
-          .set({
-            name,
-            domain,
-            shouldAttachUsersByDomain,
-          })
-          .where(eq(organizations.id, organization.id))
+          await tx
+            .update(organizations)
+            .set({
+              ownerId: transferToUserId,
+            })
+            .where(eq(organizations.id, organization.id))
+        })
 
         return reply.status(204).send()
       },
