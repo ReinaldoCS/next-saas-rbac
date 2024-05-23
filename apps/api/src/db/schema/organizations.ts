@@ -13,14 +13,14 @@ export const organizations = pgTable('organizations', {
   name: text('name').notNull(),
   slug: text('slug').unique().notNull(),
   domain: text('domain').unique(),
-  shouldAttachUsersByDomain: boolean('should_attach_users_by_domain').default(
-    false,
-  ),
+  shouldAttachUsersByDomain: boolean('should_attach_users_by_domain')
+    .default(false)
+    .notNull(),
   avatarUrl: text('avatar_url'),
   ownerId: uuid('owner_id')
     .references(() => users.id)
     .notNull(),
-  createdAt: timestamp('created_at').defaultNow(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').$onUpdate(() => new Date()),
 })
 
