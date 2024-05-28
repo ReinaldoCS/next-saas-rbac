@@ -15,7 +15,7 @@ export const projects = pgTable('projects', {
   ownerId: uuid('owner_id')
     .references(() => users.id)
     .notNull(),
-  organization: uuid('organization_id')
+  organizationId: uuid('organization_id')
     .references(() => organizations.id, { onDelete: 'cascade' })
     .notNull(),
   createdAt: timestamp('created_at').defaultNow(),
@@ -28,7 +28,7 @@ export const projectRelations = relations(projects, ({ one }) => ({
     references: [users.id],
   }),
   organizationProject: one(organizations, {
-    fields: [projects.organization],
+    fields: [projects.organizationId],
     references: [organizations.id],
   }),
 }))
