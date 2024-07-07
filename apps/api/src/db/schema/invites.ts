@@ -20,7 +20,7 @@ export const invites = pgTable(
       .primaryKey(),
     email: text('email').unique().notNull(),
     role: roleEnum('role').notNull(),
-    createdAt: timestamp('created_at').defaultNow(),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
     authorId: uuid('author_id').references(() => users.id, {
       onDelete: 'set null',
     }),
