@@ -7,7 +7,8 @@
     "dev": "npm run env:load tsx watch src/http/server.ts",
     "generate": "npm run env:load drizzle-kit generate",
     "migrate": "npm run env:load drizzle-kit migrate",
-    "seed": "npm run env:load tsx src/db/seed.ts"
+    "seed": "npm run env:load tsx src/db/seed.ts",
+    "studio": "drizzle-kit studio"
   },
   "dependencies": {
     "-": "^0.0.1",

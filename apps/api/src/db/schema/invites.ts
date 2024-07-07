@@ -21,7 +21,7 @@ export const invites = pgTable(
     email: text('email').unique().notNull(),
     role: roleEnum('role').notNull(),
     createdAt: timestamp('created_at').defaultNow(),
-    authorId: uuid('user_id').references(() => users.id, {
+    authorId: uuid('author_id').references(() => users.id, {
       onDelete: 'set null',
     }),
     organizationId: uuid('organization_id')
