@@ -33,14 +33,14 @@ export async function getProjects(app: FastifyInstance) {
                   description: z.string(),
                   slug: z.string(),
                   ownerId: z.string(),
-                  avatarUrl: z.string().nullable(),
+                  avatarUrl: z.string().url().nullable(),
                   organizationId: z.string(),
                   createdAt: z.date(),
                   owner: z
                     .object({
                       id: z.string(),
                       name: z.string().nullable(),
-                      avatarUrl: z.string().nullable(),
+                      avatarUrl: z.string().url().nullable(),
                     })
                     .nullable(),
                 }),

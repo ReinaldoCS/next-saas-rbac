@@ -11,7 +11,8 @@ import { tokens } from './tokens'
 export const users = pgTable('users', {
   id: uuid('id')
     .default(sql`gen_random_uuid()`)
-    .primaryKey(),
+    .primaryKey()
+    .notNull(),
   name: text('name'),
   email: text('email').unique().notNull(),
   passwordHash: text('password_hash'),
