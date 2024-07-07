@@ -18,7 +18,7 @@ export const projects = pgTable('projects', {
   organizationId: uuid('organization_id')
     .references(() => organizations.id, { onDelete: 'cascade' })
     .notNull(),
-  createdAt: timestamp('created_at').defaultNow(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').$onUpdate(() => new Date()),
 })
 

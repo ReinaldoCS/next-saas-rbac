@@ -174,7 +174,7 @@ async function seed() {
         anotherUser.id,
         anotherUser2.id,
       ]),
-      organization: organizationsAdmin.id,
+      organizationId: organizationsAdmin.id,
     },
     {
       name: faker.lorem.word(5),
@@ -186,7 +186,7 @@ async function seed() {
         anotherUser.id,
         anotherUser2.id,
       ]),
-      organization: organizationsAdmin.id,
+      organizationId: organizationsAdmin.id,
     },
     {
       name: faker.lorem.word(5),
@@ -198,46 +198,7 @@ async function seed() {
         anotherUser.id,
         anotherUser2.id,
       ]),
-      organization: organizationsAdmin.id,
-    },
-  ])
-
-  await db.insert(projects).values([
-    {
-      name: faker.lorem.word(5),
-      slug: faker.lorem.slug(5),
-      description: faker.lorem.paragraph(),
-      avatarUrl: faker.image.avatarGitHub(),
-      ownerId: faker.helpers.arrayElement([
-        user.id,
-        anotherUser.id,
-        anotherUser2.id,
-      ]),
-      organization: organizationsMember.id,
-    },
-    {
-      name: faker.lorem.word(5),
-      slug: faker.lorem.slug(5),
-      description: faker.lorem.paragraph(),
-      avatarUrl: faker.image.avatarGitHub(),
-      ownerId: faker.helpers.arrayElement([
-        user.id,
-        anotherUser.id,
-        anotherUser2.id,
-      ]),
-      organization: organizationsMember.id,
-    },
-    {
-      name: faker.lorem.word(5),
-      slug: faker.lorem.slug(5),
-      description: faker.lorem.paragraph(),
-      avatarUrl: faker.image.avatarGitHub(),
-      ownerId: faker.helpers.arrayElement([
-        user.id,
-        anotherUser.id,
-        anotherUser2.id,
-      ]),
-      organization: organizationsMember.id,
+      organizationId: organizationsAdmin.id,
     },
   ])
 
@@ -252,7 +213,7 @@ async function seed() {
         anotherUser.id,
         anotherUser2.id,
       ]),
-      organization: organizationsBilling.id,
+      organizationId: organizationsMember.id,
     },
     {
       name: faker.lorem.word(5),
@@ -264,7 +225,7 @@ async function seed() {
         anotherUser.id,
         anotherUser2.id,
       ]),
-      organization: organizationsBilling.id,
+      organizationId: organizationsMember.id,
     },
     {
       name: faker.lorem.word(5),
@@ -276,7 +237,46 @@ async function seed() {
         anotherUser.id,
         anotherUser2.id,
       ]),
-      organization: organizationsBilling.id,
+      organizationId: organizationsMember.id,
+    },
+  ])
+
+  await db.insert(projects).values([
+    {
+      name: faker.lorem.word(5),
+      slug: faker.lorem.slug(5),
+      description: faker.lorem.paragraph(),
+      avatarUrl: faker.image.avatarGitHub(),
+      ownerId: faker.helpers.arrayElement([
+        user.id,
+        anotherUser.id,
+        anotherUser2.id,
+      ]),
+      organizationId: organizationsBilling.id,
+    },
+    {
+      name: faker.lorem.word(5),
+      slug: faker.lorem.slug(5),
+      description: faker.lorem.paragraph(),
+      avatarUrl: faker.image.avatarGitHub(),
+      ownerId: faker.helpers.arrayElement([
+        user.id,
+        anotherUser.id,
+        anotherUser2.id,
+      ]),
+      organizationId: organizationsBilling.id,
+    },
+    {
+      name: faker.lorem.word(5),
+      slug: faker.lorem.slug(5),
+      description: faker.lorem.paragraph(),
+      avatarUrl: faker.image.avatarGitHub(),
+      ownerId: faker.helpers.arrayElement([
+        user.id,
+        anotherUser.id,
+        anotherUser2.id,
+      ]),
+      organizationId: organizationsBilling.id,
     },
   ])
 
