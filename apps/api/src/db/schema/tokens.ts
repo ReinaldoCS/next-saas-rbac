@@ -10,7 +10,7 @@ export const tokens = pgTable('tokens', {
     .default(sql`gen_random_uuid()`)
     .primaryKey(),
   userId: uuid('user_id')
-    .references(() => users.id)
+    .references(() => users.id, { onDelete: 'cascade' })
     .notNull(),
   tokenType: tokenTypeEnum('token_type').notNull(),
   createdAt: timestamp('created_at').defaultNow(),
