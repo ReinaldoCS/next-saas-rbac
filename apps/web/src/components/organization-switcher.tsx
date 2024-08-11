@@ -2,6 +2,8 @@ import { DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu'
 import { ChevronsUpDown, PlusCircle } from 'lucide-react'
 import Link from 'next/link'
 
+import { getOrganizations } from '@/http/get-organizations'
+
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 import {
   DropdownMenu,
@@ -12,7 +14,8 @@ import {
   DropdownMenuSeparator,
 } from './ui/dropdown-menu'
 
-export function OrganizationSwitcher() {
+export async function OrganizationSwitcher() {
+  const { organization } = await getOrganizations()
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="flex w-[168px] items-center gap-2 rounded p-1 text-sm font-medium outline-none focus-visible:ring-2 focus-visible:ring-primary">
@@ -28,13 +31,19 @@ export function OrganizationSwitcher() {
       >
         <DropdownMenuGroup>
           <DropdownMenuLabel>Organization</DropdownMenuLabel>
-          <DropdownMenuItem>
-            <Avatar className="mr-2 size-4">
-              <AvatarImage src="https://github.com/rocketseat.png" />
-              <AvatarFallback />
-            </Avatar>
-            <span className="line-clamp-1">Rocketseat</span>
-          </DropdownMenuItem>
+          {organization.map((organization) => (
+            <DropdownMenuItem id={organization.id} asChild>
+              <Link href={`/org/${organization.slug}`}>
+                <Avatar className="mr-2 size-4">
+                  {organization.avatarUrl && (
+                    <AvatarImage src={organization.avatarUrl} />
+                  )}
+                  <AvatarFallback />
+                </Avatar>
+                <span className="line-clamp-1">{organization.name}</span>
+              </Link>
+            </DropdownMenuItem>
+          ))}
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>

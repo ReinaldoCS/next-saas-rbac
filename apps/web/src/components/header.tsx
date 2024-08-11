@@ -3,7 +3,7 @@ import Image from 'next/image'
 
 import rocketseatIcon from '@/assets/rocketseat-icon.svg'
 
-import { OrganizationSwitcher } from './organization.switcher'
+import { OrganizationSwitcher } from './organization-switcher'
 import { ProfileButton } from './profile-button'
 
 export function Header() {
