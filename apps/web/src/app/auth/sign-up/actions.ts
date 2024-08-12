@@ -41,7 +41,7 @@ export async function signUpAction(data: FormData) {
     await signUp({ name, email, password })
   } catch (error) {
     if (error instanceof HTTPError) {
-      const { message } = await error.response.json()
+      const { message } = (await error.response.json()) as { message: string }
 
       return {
         success: false,
