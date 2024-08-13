@@ -2,7 +2,7 @@
 
 import { DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu'
 import { useQuery } from '@tanstack/react-query'
-import { ChevronsUpDown, PlusCircle } from 'lucide-react'
+import { ChevronsUpDown, Loader2, PlusCircle } from 'lucide-react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 
@@ -17,9 +17,13 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from './ui/dropdown-menu'
+import { Skeleton } from './ui/skeleton'
 
 export function ProjectSwitcher() {
-  const { slug: orgSlug } = useParams<{ slug: string }>()
+  const { slug: orgSlug, project: ProjectSlug } = useParams<{
+    slug: string
+    project: string
+  }>()
 
   const { data, isLoading } = useQuery({
     queryKey: [orgSlug, 'projects'],
@@ -27,25 +31,42 @@ export function ProjectSwitcher() {
     enabled: !!orgSlug,
   })
 
+  const currentProject = data?.projects.find(
+    (project) => project.slug === ProjectSlug,
+  )
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="flex w-[168px] items-center gap-2 rounded p-1 text-sm font-medium outline-none focus-visible:ring-2 focus-visible:ring-primary">
-        {/* {currentOrganization ? (
+        {isLoading ? (
           <>
-            <Avatar className="mr-2 size-4">
-              {currentOrganization.avatarUrl && (
-                <AvatarImage src={currentOrganization.avatarUrl} />
-              )}
-              <AvatarFallback />
-            </Avatar>
-            <span className="truncate text-left">
-              {currentOrganization.name}
-            </span>
+            <Skeleton className="size-4 shrink-0 rounded-full" />
+            <Skeleton className="h-4 w-full" />
           </>
         ) : (
-          <span className="text-muted-foreground">Select project</span>
-        )} */}
-        <ChevronsUpDown className="ml-auto size-4 text-muted-foreground" />
+          <>
+            {currentProject ? (
+              <>
+                <Avatar className="size-4">
+                  {currentProject.avatarUrl && (
+                    <AvatarImage src={currentProject.avatarUrl} />
+                  )}
+                  <AvatarFallback />
+                </Avatar>
+                <span className="truncate text-left">
+                  {currentProject.name}
+                </span>
+              </>
+            ) : (
+              <span className="text-muted-foreground">Select project</span>
+            )}
+          </>
+        )}
+        {isLoading ? (
+          <Loader2 className="ml-auto size-4 shrink-0 animate-spin text-muted-foreground" />
+        ) : (
+          <ChevronsUpDown className="ml-auto size-4 shrink-0 text-muted-foreground" />
+        )}
       </DropdownMenuTrigger>
 
       <DropdownMenuContent
@@ -56,25 +77,24 @@ export function ProjectSwitcher() {
       >
         <DropdownMenuGroup>
           <DropdownMenuLabel>Organization</DropdownMenuLabel>
-          {organization.map((organization) => (
-            <DropdownMenuItem key={organization.id} asChild>
-              <Link href={`/org/${organization.slug}`}>
-                <Avatar className="mr-2 size-4">
-                  {organization.avatarUrl && (
-                    <AvatarImage src={organization.avatarUrl} />
-                  )}
-                  <AvatarFallback />
-                </Avatar>
-                <span className="line-clamp-1 text-left">
-                  {organization.name}
-                </span>
-              </Link>
-            </DropdownMenuItem>
-          ))}
+          {data &&
+            data.projects.map((project) => (
+              <DropdownMenuItem key={project.id} asChild>
+                <Link href={`/org/${orgSlug}/project/${project.slug}`}>
+                  <Avatar className="mr-2 size-4">
+                    {project.avatarUrl && (
+                      <AvatarImage src={project.avatarUrl} />
+                    )}
+                    <AvatarFallback />
+                  </Avatar>
+                  <span className="line-clamp-1 text-left">{project.name}</span>
+                </Link>
+              </DropdownMenuItem>
+            ))}
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link href="/create-organization">
+          <Link href={`/org/${orgSlug}/create-project`}>
             <PlusCircle className="mr-2 size-4" />
             Create new
           </Link>

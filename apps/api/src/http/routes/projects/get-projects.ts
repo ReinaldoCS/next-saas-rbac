@@ -26,7 +26,7 @@ export async function getProjects(app: FastifyInstance) {
           }),
           response: {
             201: z.object({
-              project: z.array(
+              projects: z.array(
                 z.object({
                   id: z.string().uuid(),
                   name: z.string(),
@@ -87,7 +87,7 @@ export async function getProjects(app: FastifyInstance) {
           .orderBy(desc(projects.createdAt))
 
         return reply.status(200).send({
-          project: projectsOrganization,
+          projects: projectsOrganization,
         })
       },
     )
