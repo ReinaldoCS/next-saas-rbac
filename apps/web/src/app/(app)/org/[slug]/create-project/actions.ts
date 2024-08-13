@@ -3,7 +3,8 @@
 import { HTTPError } from 'ky'
 import { z } from 'zod'
 
-// import { createProject } from '@/http/create-project'
+import { getCurrentOrg } from '@/auth/auth'
+import { createProject } from '@/http/create-project'
 
 const projectSchema = z.object({
   name: z
@@ -24,12 +25,10 @@ export async function createProjectAction(data: FormData) {
     }
   }
 
-  console.log(results.data)
-
   const { name, description } = results.data
 
   try {
-    // await createProject({ name, description })
+    await createProject({ orgSlug: getCurrentOrg()!, name, description })
   } catch (error) {
     if (error instanceof HTTPError) {
       const { message } = (await error.response.json()) as { message: string }
