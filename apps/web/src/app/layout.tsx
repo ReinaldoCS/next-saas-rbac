@@ -2,9 +2,10 @@ import './globals.css'
 
 import type { Metadata } from 'next'
 import { Inter as FontSans } from 'next/font/google'
-import { ThemeProvider } from 'next-themes'
 
 import { cn } from '@/lib/utils'
+
+import { Providers } from './providers'
 
 const fontSans = FontSans({
   subsets: ['latin'],
@@ -28,13 +29,7 @@ export default function RootLayout({
           fontSans.variable,
         )}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          disableTransitionOnChange
-        >
-          {children}
-        </ThemeProvider>
+        <Providers>{children}</Providers>
       </body>
     </html>
   )
