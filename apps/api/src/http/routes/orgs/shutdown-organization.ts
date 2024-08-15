@@ -43,9 +43,6 @@ export async function shutdownOrganization(app: FastifyInstance) {
           ownerId: organization.ownerId,
         })
 
-        console.log(userId)
-        console.log(organization.ownerId)
-
         const permissions = getUserPermissions(userId, membership.role)
 
         if (permissions.cannot('delete', authOrganization)) {

@@ -34,7 +34,6 @@ const organizationSchema = z
   })
   .refine(
     (data) => {
-      console.log(data.shouldAttachUsersByDomain === true && !data.domain)
       if (data.shouldAttachUsersByDomain === true && !data.domain) {
         return false
       }

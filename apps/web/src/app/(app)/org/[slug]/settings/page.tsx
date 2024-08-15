@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/card'
 import { getOrganization } from '@/http/get-organization'
 
+import { Billing } from './billing'
 import { ShutdownOrganizationButton } from './shutdown-organization-button'
 
 export default async function Settings() {
@@ -47,17 +48,7 @@ export default async function Settings() {
           </Card>
         )}
 
-        {canGetBilling && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Billing settings</CardTitle>
-              <CardDescription>
-                Manage your organization's billing details
-              </CardDescription>
-            </CardHeader>
-            <CardContent>{/* Billing settings */}</CardContent>
-          </Card>
-        )}
+        {canGetBilling && <Billing />}
 
         {canShutdownOrganization && (
           <Card>
