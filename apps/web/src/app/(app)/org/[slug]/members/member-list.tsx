@@ -60,7 +60,7 @@ export async function MemberList() {
                   </div>
                 </TableCell>
 
-                <TableCell>
+                <TableCell className="py-2.5">
                   <div className="flex items-center justify-end gap-2">
                     {permissions?.can(
                       'transfer_ownership',
