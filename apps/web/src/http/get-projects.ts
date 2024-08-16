@@ -22,7 +22,11 @@ export async function getProjects(
   orgSlug: string,
 ): Promise<GetProjectsResponse> {
   const result = await api
-    .get(`organizations/${orgSlug}/projects`)
+    .get(`organizations/${orgSlug}/projects`, {
+      next: {
+        tags: [`${orgSlug}-projects`],
+      },
+    })
     .json<GetProjectsResponse>()
 
   return result
