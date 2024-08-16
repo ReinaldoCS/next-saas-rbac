@@ -112,6 +112,9 @@ export async function createInvite(app: FastifyInstance) {
             id: invites.id,
           })
 
+        // Add feature for send email notification for this invite include url to accept invite
+        console.log('invite id: ', invite.id)
+
         return reply.status(201).send({
           inviteId: invite.id,
         })
