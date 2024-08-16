@@ -80,7 +80,7 @@ async function seed() {
     .values({
       name: 'Acme Inc (Member)',
       slug: 'acme-member',
-      ownerId: user.id,
+      ownerId: anotherUser.id,
       shouldAttachUsersByDomain: true,
       avatarUrl: faker.image.avatarGitHub(),
     })
@@ -91,7 +91,7 @@ async function seed() {
     .values({
       name: 'Acme Inc (Billing)',
       slug: 'acme-billing',
-      ownerId: user.id,
+      ownerId: anotherUser2.id,
       shouldAttachUsersByDomain: true,
       avatarUrl: faker.image.avatarGitHub(),
     })

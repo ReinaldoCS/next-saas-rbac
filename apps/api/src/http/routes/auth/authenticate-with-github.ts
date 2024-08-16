@@ -83,7 +83,7 @@ export async function authenticateWithGithub(app: FastifyInstance) {
         })
         .parse(githubUserData)
 
-      console.log(githubUserData)
+      // console.log(githubUserData)
 
       if (!email) {
         throw new BadRequestError(
