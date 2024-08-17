@@ -24,6 +24,8 @@ export function SignInForm() {
 
   const search = searchParams.get('error')
 
+  const defaultEmail = searchParams.get('email') ?? ''
+
   const [{ success, message, errors }, handleSubmit, isPending] = useFormState(
     signInWithEmailAndPassword,
     () => {
@@ -56,7 +58,12 @@ export function SignInForm() {
 
         <div className="space-y-1">
           <Label htmlFor="email">E-mail</Label>
-          <Input name="email" type="email" id="email" />
+          <Input
+            name="email"
+            type="email"
+            id="email"
+            defaultValue={defaultEmail}
+          />
 
           {errors?.email && (
             <p className="text-xs font-medium text-rose-500 dark:text-rose-400">

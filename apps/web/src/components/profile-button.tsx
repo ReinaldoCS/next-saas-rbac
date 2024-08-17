@@ -1,5 +1,6 @@
 import { DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu'
 import { ChevronDown, LogOut } from 'lucide-react'
+import { getInitials } from 'utils/getInitials'
 
 import { auth } from '@/auth/auth'
 
@@ -9,19 +10,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from './ui/dropdown-menu'
-
-function getInitials(name: string): string {
-  const nameParts = name.trim().split(' ')
-  let initials = ''
-
-  for (let i = 0; i < nameParts.length && initials.length < 2; i++) {
-    if (nameParts[i]) {
-      initials += nameParts[i][0].toUpperCase()
-    }
-  }
-
-  return initials
-}
 
 export async function ProfileButton() {
   const { user } = await auth()
